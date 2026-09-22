@@ -5,6 +5,7 @@ are embedded, so a single text embedding space covers both kinds of asset.
 """
 
 import logging
+import math
 
 from google import genai
 from google.genai import types
@@ -63,3 +64,37 @@ def describe_image(raw: bytes, mime_type: str) -> AssetMetadata:
 def describe_text(content: str) -> AssetMetadata:
     excerpt = content[:MAX_PROMPT_CHARS]
     return _generate([f"{_PROMPT}\n\n--- FILE CONTENTS ---\n{excerpt}"])
+
+
+def embed(text: str, task_type: str) -> list[float]:
+    """Embed text for storage ("RETRIEVAL_DOCUMENT") or for a query ("RETRIEVAL_QUERY").
+
+    Gemini embeds documents and queries into slightly different spaces depending on
+    task_type, so the two callers must not share one value.
+
+    gemini-embedding-001 only returns unit vectors at its native 3072 dimensions;
+    truncated outputs come back unnormalised (~0.58 here), so we normalise
+    ourselves and stay correct under any distance metric.
+    """
+    response = client().models.embed_content(
+        model=settings.gemini_embed_model,
+        contents=text[:MAX_PROMPT_CHARS],
+        config=types.EmbedContentConfig(
+            task_type=task_type,
+            output_dimensionality=settings.embed_dimensions,
+        ),
+    )
+    vector = response.embeddings[0].values
+    norm = math.sqrt(sum(v * v for v in vector))
+    if norm == 0:
+        raise ValueError("Gemini returned a zero embedding.")
+    return [v / norm for v in vector]
+
+
+def build_embed_text(description: str, tags: list[str], text_content: str | None) -> str:
+    """What actually gets embedded: the AI description carries the meaning, the raw
+    excerpt adds exact wording the two-sentence description cannot cover."""
+    parts = [description, f"Tags: {', '.join(tags)}" if tags else ""]
+    if text_content:
+        parts.append(text_content[:2000])
+    return "\n".join(p for p in parts if p)

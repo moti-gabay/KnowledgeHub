@@ -6,7 +6,7 @@ from fastapi.staticfiles import StaticFiles
 
 from app.config import settings
 from app.db import init_db
-from app.routers import assets
+from app.routers import assets, search
 
 
 @asynccontextmanager
@@ -23,6 +23,7 @@ app.mount("/files", StaticFiles(directory=settings.uploads_dir), name="files")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 app.include_router(assets.router)
+app.include_router(search.router)
 
 
 @app.get("/health")

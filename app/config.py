@@ -13,7 +13,11 @@ class Settings(BaseSettings):
     gemini_embed_model: str = "gemini-embedding-001"
 
     # Retrieval tuning
-    embed_dimensions: int = 768
+    embed_dimensions: int = 3072
+    search_limit: int = 10
+    # gemini-embedding-001 has a high similarity floor (unrelated pairs still score
+    # ~0.50), so this only drops obvious noise. Ranking does the real work.
+    min_similarity: float = 0.55
     max_upload_bytes: int = 10 * 1024 * 1024
 
     @property

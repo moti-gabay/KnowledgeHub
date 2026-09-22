@@ -8,7 +8,7 @@ from app.config import settings
 from app.db import get_db
 from app.models import Asset
 from app.schemas import AssetOut
-from app.services import ai, storage
+from app.services import ai, storage, vectorstore
 
 logger = logging.getLogger(__name__)
 
@@ -67,6 +67,18 @@ def upload(file: UploadFile = File(...), db: Session = Depends(get_db)) -> Asset
     )
     db.add(asset)
     db.commit()
+
+    # SQLite first, then the derived index: a failure here costs searchability,
+    # not the asset.
+    if metadata_ok:
+        try:
+            embed_text = ai.build_embed_text(description, tags, text_content)
+            vectorstore.index(asset_id, ai.embed(embed_text, "RETRIEVAL_DOCUMENT"), embed_text, kind)
+        except Exception:
+            logger.exception("Indexing failed for %s", asset_id)
+            asset.metadata_ok = False
+            db.commit()
+
     return asset
 
 

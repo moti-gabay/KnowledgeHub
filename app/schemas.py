@@ -25,3 +25,9 @@ class AssetOut(BaseModel):
     metadata_ok: bool
     text_content: str | None = None
     created_at: datetime
+
+
+class SearchHit(AssetOut):
+    """An asset plus how well it matched the query."""
+
+    score: float
