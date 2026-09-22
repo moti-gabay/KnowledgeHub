@@ -1,0 +1,12 @@
+# Render Blueprint. Makes the deployment reproducible instead of a set of
+# settings typed into a dashboard.
+services:
+  - type: web
+    name: knowledgehub
+    runtime: docker
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      # sync: false means Render prompts for the value instead of storing it here.
+      - key: GEMINI_API_KEY
+        sync: false
