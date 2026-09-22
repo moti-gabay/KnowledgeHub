@@ -9,5 +9,7 @@ __pycache__/
 *.pdf
 *:Zone.Identifier
 PLAN.md
+README.md
+docs/
 .idea/
 .vscode/
