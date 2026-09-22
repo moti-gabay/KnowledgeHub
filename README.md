@@ -7,7 +7,7 @@ talks about it, even though neither contains that phrase in its filename.
 
 ![KnowledgeHub search results](docs/screenshot.png)
 
-**Live demo:** _add the Render URL here after deploying_
+**Live demo:** https://knowledgehub-q7dy.onrender.com/
 **Repository:** https://github.com/moti-gabay/KnowledgeHub
 
 ---
@@ -97,9 +97,15 @@ docker run -p 8000:8000 --env-file .env knowledgehub
 and paste the Gemini key when prompted. It is deliberately marked `sync: false`
 so the secret is never stored in the repository.
 
-On first boot the knowledge base is empty, so a background thread ingests the
-six files in `seed/`. It runs off the request path, so the health check answers
-in about three seconds while seeding finishes about thirty seconds later.
+The blueprint mounts a 1 GB disk at `/app/data`, which is where `DATA_DIR`
+already points, so uploads, the SQLite file and the Chroma index survive
+deploys and restarts.
+
+On first boot that disk is empty, so a background thread ingests the six files
+in `seed/` and the demo has content the moment it is opened. The check is
+`count() > 0`, so it never runs again once anything exists, and it runs off the
+request path: the health check answers in about four seconds while seeding
+finishes roughly thirty seconds later.
 
 ---
 
@@ -221,18 +227,18 @@ genuine matches scored 0.61 to 0.73. The cutoff sits at 0.63.
 These are deliberate, given the brief says no authentication, authorisation,
 scalability or production-grade security is required.
 
-- **Nothing persists on Render's free tier.** There is no disk, so uploads,
-  the database and the index are wiped on every deploy and restart. Seeding
-  hides this for the demo. A mounted disk, or S3 plus Postgres, is the fix.
-- **The free instance sleeps** after fifteen minutes idle, so the first
-  request can take up to a minute.
+- **State lives on one disk.** Files sit on the local filesystem and SQLite
+  and Chroma are single-node, so the service cannot run more than one
+  instance. S3 plus Postgres with pgvector is the path beyond that.
+- **No delete or edit.** Removing an asset means clearing the data directory,
+  which also clears the seeded demo content.
 - **The similarity threshold was tuned on six assets.** It is a soft filter;
   ranking is what search quality actually rests on. Scores are shown in the UI
   so relevance is never a black box.
 - **Generic queries have weak separation.** This embedding model has a high
   similarity floor, so a word like `document` is only narrowly separated from
   noise. Hybrid keyword plus vector search is the real fix.
-- **No delete or edit**, no pagination, and no authentication.
+- **No pagination and no authentication.**
 - **The image is 848 MB.** Chroma pulls in kubernetes and onnxruntime, roughly
   150 MB that this application never touches, since it supplies its own
   embeddings. Dropping Chroma for a numpy cosine scan would remove them.

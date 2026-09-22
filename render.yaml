@@ -4,9 +4,15 @@ services:
   - type: web
     name: knowledgehub
     runtime: docker
-    plan: free
+    plan: starter
     healthCheckPath: /health
     envVars:
       # sync: false means Render prompts for the value instead of storing it here.
       - key: GEMINI_API_KEY
         sync: false
+    # Uploads, the SQLite file and the Chroma index survive deploys and
+    # restarts. DATA_DIR already points here, so no code change is needed.
+    disk:
+      name: knowledgehub-data
+      mountPath: /app/data
+      sizeGB: 1
