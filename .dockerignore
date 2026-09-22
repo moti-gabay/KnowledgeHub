@@ -1,0 +1,13 @@
+data/
+.env
+.git/
+.gitignore
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.pdf
+*:Zone.Identifier
+PLAN.md
+.idea/
+.vscode/

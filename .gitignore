@@ -1,0 +1,21 @@
+# Runtime data (uploads, SQLite, Chroma)
+data/
+
+# Secrets
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+
+# Assignment brief / WSL artifacts
+*.pdf
+*:Zone.Identifier
+
+# Editors / OS
+.DS_Store
+.idea/
+.vscode/

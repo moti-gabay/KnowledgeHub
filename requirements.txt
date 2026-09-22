@@ -1,0 +1,7 @@
+fastapi==0.141.1
+uvicorn[standard]==0.53.0
+python-multipart==0.0.32
+pydantic-settings==2.15.0
+SQLAlchemy==2.0.54
+google-genai==2.24.0
+chromadb==1.5.9
