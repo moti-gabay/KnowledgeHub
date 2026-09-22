@@ -15,9 +15,11 @@ class Settings(BaseSettings):
     # Retrieval tuning
     embed_dimensions: int = 3072
     search_limit: int = 10
-    # gemini-embedding-001 has a high similarity floor (unrelated pairs still score
-    # ~0.50), so this only drops obvious noise. Ranking does the real work.
-    min_similarity: float = 0.55
+    # gemini-embedding-001 has a high similarity floor: across a survey of 11
+    # queries, unrelated assets still scored 0.55-0.61 while genuine matches sat at
+    # 0.61-0.73. 0.63 is the empirical split. It is a soft filter tuned on a small
+    # corpus, so ranking, not the cutoff, is what search quality rests on.
+    min_similarity: float = 0.63
     max_upload_bytes: int = 10 * 1024 * 1024
 
     @property
