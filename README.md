@@ -118,22 +118,18 @@ Interactive docs are at `/docs`.
 
 ---
 
-## AI tools used during development
+## 🤖 AI Tools Used
 
-Claude Code (Anthropic) was used throughout, as an agent that wrote code,
-ran it, and iterated on the results rather than as an autocomplete. It was
-most useful for the parts that needed measurement rather than typing: running
-the model and embedding benchmarks below, driving the browser through
-Playwright to verify the UI, and catching the two regressions described in
-"What measurement changed".
+In accordance with the assignment guidelines, AI tools were leveraged throughout the project lifecycle:
 
-The generated code was reviewed and adjusted throughout; the design decisions
-below are mine and I can defend each one.
+* **Claude Code (CLI Agent):** Served as the primary coding agent responsible for writing the application code, executing tests (including E2E verification via Playwright), running model evaluation benchmarks, and managing project refactoring.
+* **Google Gemini (Chat & API):** Used as the core multimodal AI service powering the application's vision analysis, metadata extraction, and vector embeddings (`gemini-3.8-flash` / `gemini-embedding-001`). Additionally, Gemini Chat was utilized for architectural planning, evaluating technical approaches, and deciding on the optimal tech stack for this assignment.
+* **Grok (Chat):** Used for technical research, architectural brainstorming, and validating system design decisions prior to implementation.
 
-The four demo images in `seed/` were also generated, using Gemini's image
-models, because the assignment's own examples call for a portrait with black
-hair and a photo containing a document, and using generated fixtures avoided
-any question of image licensing.
+The four demo images in `seed/` were also generated, using Gemini's image models,
+because the assignment's own examples call for a portrait with black hair and a
+photo containing a document, and using generated fixtures avoided any question of
+image licensing.
 
 ---
 
