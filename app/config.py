@@ -9,7 +9,7 @@ class Settings(BaseSettings):
 
     gemini_api_key: str = ""
     data_dir: Path = Path("./data")
-    gemini_chat_model: str = "gemini-2.5-flash"
+    gemini_chat_model: str = "gemini-3.8-flash"
     gemini_embed_model: str = "gemini-embedding-001"
 
     # Retrieval tuning

@@ -1,6 +1,14 @@
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
+
+
+class AssetMetadata(BaseModel):
+    """AI-generated metadata. Doubles as the response schema handed to Gemini,
+    so the model returns exactly these fields and no parsing guesswork is needed."""
+
+    description: str = Field(description="One or two factual sentences describing the asset.")
+    tags: list[str] = Field(description="5-12 short lowercase keywords.")
 
 
 class AssetOut(BaseModel):
